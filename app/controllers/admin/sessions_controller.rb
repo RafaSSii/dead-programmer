@@ -1,5 +1,10 @@
 module Admin
   class SessionsController < ApplicationController
+    # Limit brute-force attempts per client IP; the backing store is configurable
+    # through Rails.cache and works with the in-memory store used locally.
+    rate_limit to: 5, within: 15.minutes, only: :create,
+      with: -> { head :too_many_requests }
+
     def new
       redirect_to admin_articles_path if session[:admin_authenticated]
     end
