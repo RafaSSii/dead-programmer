@@ -20,6 +20,11 @@ module Admin
       end
     end
 
+    def preview
+      @article = Article.new(article_params)
+      render :preview
+    end
+
     def edit; end
 
     def update
