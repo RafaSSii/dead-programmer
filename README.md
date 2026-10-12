@@ -17,14 +17,18 @@ bin/dev
 ```
 Acesse http://localhost:3000.
 
-## Painel de escrita
-O painel fica em `/admin/articles` e exige HTTP Basic. Configure antes de iniciar:
+## Painel privado de escrita
+A tela de login não aparece na navegação pública. Acesse diretamente:
+
+`/caderno-privado-7f3c9a`
+
+O caminho escondido é apenas uma camada de discrição, não substitui autenticação. O painel exige usuário e senha e não permite cadastro público. Configure as credenciais antes de iniciar:
 ```bash
 export BLOG_ADMIN_USER="seu_usuario"
 export BLOG_ADMIN_PASSWORD="uma_senha_forte"
 bin/dev
 ```
-Sem essas variáveis, o painel retorna indisponível em vez de abrir sem autenticação. Artigos em rascunho não aparecem publicamente.
+Depois do login, o painel fica em `/admin/articles`. Sem as variáveis de ambiente, o login permanece indisponível. Use HTTPS em produção e não armazene credenciais no repositório.
 
 ## Testes
 ```bash
@@ -32,4 +36,4 @@ bin/rails test
 ```
 
 ## MVP
-Página inicial, busca, leitura, artigos publicados/rascunhos, painel protegido, editor Markdown e visual básico, alternância de tema. Próximos passos: tags, RSS, sitemap e upload de imagens.
+Página inicial, busca, leitura, artigos publicados/rascunhos, painel protegido por login, editor Markdown e visual básico, alternância de tema. Próximos passos: tags, RSS, sitemap e upload de imagens.
