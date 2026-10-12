@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   delete "sair-do-caderno", to: "admin/sessions#destroy", as: :admin_logout
 
   namespace :admin do
+    post "articles/preview", to: "articles#preview", as: :preview_articles
     resources :articles, except: :show
   end
   get "up" => "rails/health#show", as: :rails_health_check
