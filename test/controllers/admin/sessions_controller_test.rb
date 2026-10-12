@@ -17,6 +17,8 @@ class Admin::SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "private login page renders a credential form with an authenticity token" do
+    ActionController::Base.allow_forgery_protection = true
+
     get admin_login_url
     assert_response :success
     assert_select "form"
