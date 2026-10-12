@@ -2,7 +2,8 @@ class Article < ApplicationRecord
   STATUSES = %w[draft published].freeze
   CONTENT_FORMATS = %w[markdown visual].freeze
   before_validation :generate_slug, if: -> { slug.blank? && title.present? }
-  before_validation :set_published_at, if: -> { status == "published" && published_at.nil? }
+  before_validation :set_published_at,
+    if: -> { status == "published" && (published_at.nil? || will_save_change_to_status?) }
 
   validates :title, presence: true, length: { maximum: 180 }
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/ }

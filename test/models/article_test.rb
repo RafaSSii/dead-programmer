@@ -17,6 +17,17 @@ class ArticleTest < ActiveSupport::TestCase
     assert_includes article.errors.attribute_names, :status
     assert_includes article.errors.attribute_names, :content_format
   end
+  test "refreshes publication date when a draft is published again" do
+    article = Article.create!(title: "Publicação", body: "Texto", status: "published")
+    first_publication = article.published_at
+
+    article.update!(status: "draft")
+    travel 1.day do
+      article.update!(status: "published")
+      assert_operator article.published_at, :>, first_publication
+    end
+  end
+
   test "estimates at least one minute of reading" do
     assert_equal 1, Article.new(title: "Teste", body: "Poucas palavras").reading_minutes
   end
