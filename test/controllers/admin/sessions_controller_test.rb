@@ -6,6 +6,7 @@ class Admin::SessionsControllerTest < ActionDispatch::IntegrationTest
     @original_password = ENV["BLOG_ADMIN_PASSWORD"]
     ENV["BLOG_ADMIN_USER"] = "test-admin"
     ENV["BLOG_ADMIN_PASSWORD"] = "test-secret-password"
+    Rails.cache.clear
   end
 
   teardown do
@@ -35,9 +36,53 @@ class Admin::SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_login_path
   end
 
-  test "admin article panel redirects unauthenticated visitors to login" do
-    get admin_articles_url
-    assert_redirected_to admin_login_path
+  test "invalid username is rejected" do
+    post admin_login_url, params: { username: "wrong-user", password: "test-secret-password" }
+    assert_response :unprocessable_entity
+    assert_match "Usuário ou senha incorretos.", response.body
+  end
+
+  test "login is unavailable when credentials are not configured" do
+    ENV["BLOG_ADMIN_USER"] = nil
+    ENV["BLOG_ADMIN_PASSWORD"] = nil
+
+    post admin_login_url, params: { username: "test-admin", password: "test-secret-password" }
+
+    assert_response :service_unavailable
+    assert_match "não foi configurado", response.body
+  end
+
+  test "login attempts are rate limited per client IP" do
+    client_env = { "REMOTE_ADDR" => "203.0.113.77" }
+
+    5.times do
+      post admin_login_url,
+        params: { username: "test-admin", password: "wrong-password" },
+        env: client_env
+      assert_response :unprocessable_entity
+    end
+
+    post admin_login_url,
+      params: { username: "test-admin", password: "wrong-password" },
+      env: client_env
+
+    assert_response :too_many_requests
+  end
+
+  test "every admin article action rejects unauthenticated visitors" do
+    requests = [
+      -> { get admin_articles_url },
+      -> { get new_admin_article_url },
+      -> { post admin_articles_url, params: { article: { title: "Teste", body: "Texto" } } },
+      -> { get edit_admin_article_url(12) },
+      -> { patch admin_article_url(12), params: { article: { title: "Alterado" } } },
+      -> { delete admin_article_url(12) }
+    ]
+
+    requests.each do |request|
+      request.call
+      assert_redirected_to admin_login_path
+    end
   end
 
   test "logout clears the admin session" do
