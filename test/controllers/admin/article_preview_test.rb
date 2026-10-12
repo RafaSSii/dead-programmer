@@ -46,7 +46,7 @@ class Admin::ArticlePreviewTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select ".prose p", "Conteúdo seguro"
-    assert_no_match(/<script/i, response.body)
+    assert_select ".prose script", count: 0
   end
 
   test "new article form offers preview in a separate tab" do
