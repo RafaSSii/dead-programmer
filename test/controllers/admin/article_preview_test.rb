@@ -16,7 +16,7 @@ class Admin::ArticlePreviewTest < ActionDispatch::IntegrationTest
   end
 
   test "previews unsaved Markdown without creating an article" do
-    post preview_admin_articles_url, params: {
+    post admin_preview_articles_url, params: {
       article: {
         title: "Prévia sem salvar",
         excerpt: "Resumo da prévia",
@@ -35,7 +35,7 @@ class Admin::ArticlePreviewTest < ActionDispatch::IntegrationTest
   end
 
   test "sanitizes visual HTML in the preview" do
-    post preview_admin_articles_url, params: {
+    post admin_preview_articles_url, params: {
       article: {
         title: "Prévia visual",
         body: '<script>alert("xss")</script><p>Conteúdo seguro</p>',
