@@ -9,26 +9,22 @@ Blog pessoal para publicar artigos e anotações sobre programação, Linux e te
 - Tema claro/escuro e editor Markdown/visual básico
 
 ## Executar
+Configure as credenciais administrativas e um caminho privado antes de iniciar o servidor:
 ```bash
+export BLOG_ADMIN_USER="seu_usuario"
+export BLOG_ADMIN_PASSWORD="uma_senha_forte"
+export BLOG_LOGIN_PATH="escolha-um-caminho-longo-e-dificil-de-adivinhar"
 bundle install
 bin/rails db:prepare
 bin/rails db:seed
 bin/dev
 ```
-Acesse http://localhost:3000.
+Acesse http://localhost:3000. A tela de login ficará disponível no caminho escolhido em `BLOG_LOGIN_PATH`; esse caminho não fica gravado no repositório nem aparece na navegação pública.
 
 ## Painel privado de escrita
-A tela de login não aparece na navegação pública. Acesse diretamente:
+Após entrar com as credenciais configuradas em `BLOG_ADMIN_USER` e `BLOG_ADMIN_PASSWORD`, você poderá gerenciar os artigos em `/admin/articles`. Não existe cadastro público. Se `BLOG_LOGIN_PATH` não estiver configurado, a rota de login não é criada e o painel administrativo retorna 404 para visitantes não autenticados.
 
-`/caderno-privado-7f3c9a`
-
-O caminho escondido é apenas uma camada de discrição, não substitui autenticação. O painel exige usuário e senha e não permite cadastro público. Configure as credenciais antes de iniciar:
-```bash
-export BLOG_ADMIN_USER="seu_usuario"
-export BLOG_ADMIN_PASSWORD="uma_senha_forte"
-bin/dev
-```
-Depois do login, o painel fica em `/admin/articles`. Sem as variáveis de ambiente, o login permanece indisponível. Use HTTPS em produção e não armazene credenciais no repositório.
+Use HTTPS em produção, mantenha as variáveis de ambiente fora do repositório e escolha um caminho privado que não reutilize senhas. O caminho discreto é uma camada adicional; a autenticação é a proteção real.
 
 ## Testes
 ```bash
