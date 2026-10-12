@@ -13,7 +13,10 @@
   <%= link_to root_path, class: "brand" do %><span class="brand-mark">dp.</span><span>dead programmer<span class="brand-dot">/</span></span><% end %>
   <nav class="main-nav" aria-label="Navegação principal">
     <%= link_to "Artigos", root_path, class: "nav-link" %><a href="/#sobre" class="nav-link">Sobre</a>
-    <%= link_to "Escrever", new_admin_article_path, class: "nav-link nav-write" %>
+    <% if session[:admin_authenticated] %>
+      <%= link_to "Painel", admin_articles_path, class: "nav-link" %>
+      <%= button_to "Sair", admin_logout_path, method: :delete, class: "nav-link nav-logout" %>
+    <% end %>
     <button type="button" class="theme-toggle" data-action="theme#toggle" aria-label="Alternar tema"><span data-theme-target="icon">☾</span><span class="theme-toggle-label">Tema</span></button>
   </nav>
 </div></header>

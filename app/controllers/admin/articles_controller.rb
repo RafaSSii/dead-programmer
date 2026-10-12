@@ -38,13 +38,10 @@ module Admin
     private
 
     def authenticate_admin!
-      user, password = ENV.values_at("BLOG_ADMIN_USER", "BLOG_ADMIN_PASSWORD")
-      return head :service_unavailable if user.blank? || password.blank?
+      return if session[:admin_authenticated]
 
-      authenticate_or_request_with_http_basic("Dead Programmer Admin") do |provided_user, provided_password|
-        ActiveSupport::SecurityUtils.secure_compare(provided_user, user) &&
-          ActiveSupport::SecurityUtils.secure_compare(provided_password, password)
-      end
+      session[:return_to_admin] = request.fullpath
+      redirect_to admin_login_path, alert: "Entre para acessar a área de escrita."
     end
 
     def set_article
