@@ -15,7 +15,7 @@ class Article < ApplicationRecord
   scope :recent_first, -> { order(published_at: :desc, created_at: :desc) }
 
   def reading_minutes
-    [(body.to_s.split.size / 200.0).ceil, 1].max
+    [ (body.to_s.split.size / 200.0).ceil, 1 ].max
   end
 
   private
