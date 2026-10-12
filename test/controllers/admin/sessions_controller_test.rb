@@ -4,6 +4,7 @@ class Admin::SessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @original_user = ENV["BLOG_ADMIN_USER"]
     @original_password = ENV["BLOG_ADMIN_PASSWORD"]
+    @original_forgery_protection = ActionController::Base.allow_forgery_protection
     ENV["BLOG_ADMIN_USER"] = "test-admin"
     ENV["BLOG_ADMIN_PASSWORD"] = "test-secret-password"
     Rails.cache.clear
@@ -12,18 +13,35 @@ class Admin::SessionsControllerTest < ActionDispatch::IntegrationTest
   teardown do
     ENV["BLOG_ADMIN_USER"] = @original_user
     ENV["BLOG_ADMIN_PASSWORD"] = @original_password
+    ActionController::Base.allow_forgery_protection = @original_forgery_protection
   end
 
-  test "private login page renders a credential form" do
+  test "private login page renders a credential form with an authenticity token" do
     get admin_login_url
     assert_response :success
     assert_select "form"
     assert_select "input[type=password]"
+    assert_select 'input[name="authenticity_token"][value]'
   end
 
-  test "valid credentials create an admin session" do
+  test "login rejects a request without a valid authenticity token when forgery protection is enabled" do
+    ActionController::Base.allow_forgery_protection = true
+
+    post admin_login_url, params: { username: "test-admin", password: "test-secret-password" }
+
+    assert_response :unprocessable_entity
+    get admin_articles_url
+    assert_redirected_to admin_login_path
+  end
+
+  test "valid credentials create an admin session with hardened cookie attributes" do
     post admin_login_url, params: { username: "test-admin", password: "test-secret-password" }
     assert_redirected_to admin_articles_path
+
+    cookie_header = response.headers["Set-Cookie"].to_s
+    assert_match(/httponly/i, cookie_header)
+    assert_match(/samesite=lax/i, cookie_header)
+
     follow_redirect!
     assert_response :success
     assert_select "h1", "Suas publicações"
