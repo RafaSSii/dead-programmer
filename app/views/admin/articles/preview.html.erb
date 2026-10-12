@@ -1,0 +1,16 @@
+<section class="post-page">
+  <div class="flash flash-notice preview-banner" role="status">
+    Pré-visualização — este conteúdo ainda não foi salvo nem publicado.
+  </div>
+  <nav class="breadcrumbs"><%= link_to "Painel", admin_articles_path %><span>/</span><span>Pré-visualização</span></nav>
+  <header class="post-header">
+    <div class="eyebrow"><span class="eyebrow-line"></span> PRÉ-VISUALIZAÇÃO PRIVADA</div>
+    <h1><%= @article.title.presence || "Artigo sem título" %></h1>
+    <% if @article.excerpt.present? %><p class="post-excerpt"><%= @article.excerpt %></p><% end %>
+    <div class="post-meta"><span>Prévia não publicada</span><span>·</span><span><%= @article.reading_minutes %> min de leitura</span></div>
+  </header>
+  <div class="post-divider"></div>
+  <div class="prose"><%= article_body_html(@article) %></div>
+  <div class="post-end"><span>✳</span><p>Esta prévia não altera o artigo salvo.</p></div>
+  <%= link_to "← Voltar ao painel", admin_articles_path, class: "back-link" %>
+</section>
