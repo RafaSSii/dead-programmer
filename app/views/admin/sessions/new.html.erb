@@ -1,0 +1,20 @@
+<section class="admin-page login-page">
+  <div class="login-card">
+    <p class="section-kicker">ACESSO RESTRITO</p>
+    <h1>Área de escrita</h1>
+    <p class="muted-copy">Entre com suas credenciais para gerenciar seus artigos.</p>
+
+    <%= form_with url: admin_login_path, method: :post, class: "article-form login-form" do |f| %>
+      <div class="form-field">
+        <%= f.label :username, "Usuário" %>
+        <%= f.text_field :username, autocomplete: "username", required: true, autofocus: true, class: "form-input" %>
+      </div>
+      <div class="form-field">
+        <%= f.label :password, "Senha" %>
+        <%= f.password_field :password, autocomplete: "current-password", required: true, class: "form-input" %>
+      </div>
+      <%= f.submit "Entrar", class: "button button-primary" %>
+    <% end %>
+    <p class="field-hint">Esta área não possui cadastro público.</p>
+  </div>
+</section>
