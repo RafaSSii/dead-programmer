@@ -94,6 +94,7 @@ class Admin::SessionsControllerTest < ActionDispatch::IntegrationTest
       -> { get admin_articles_url },
       -> { get new_admin_article_url },
       -> { post admin_articles_url, params: { article: { title: "Teste", body: "Texto" } } },
+      -> { post preview_admin_articles_url, params: { article: { title: "Prévia", body: "Texto" } } },
       -> { get edit_admin_article_url(12) },
       -> { patch admin_article_url(12), params: { article: { title: "Alterado" } } },
       -> { delete admin_article_url(12) }
