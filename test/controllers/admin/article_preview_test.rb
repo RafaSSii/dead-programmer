@@ -53,6 +53,6 @@ class Admin::ArticlePreviewTest < ActionDispatch::IntegrationTest
     get new_admin_article_url
 
     assert_response :success
-    assert_select 'button[formtarget="_blank"][formaction=?]', preview_admin_articles_path, text: /Pré-visualizar/
+    assert_select 'button[formtarget="_blank"][formaction=?]', admin_preview_articles_path, text: /Pré-visualizar/
   end
 end
