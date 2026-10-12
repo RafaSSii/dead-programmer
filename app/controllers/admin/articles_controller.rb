@@ -40,6 +40,8 @@ module Admin
     def authenticate_admin!
       return if session[:admin_authenticated]
 
+      return head :not_found if ENV["BLOG_LOGIN_PATH"].blank?
+
       session[:return_to_admin] = request.fullpath
       redirect_to admin_login_path, alert: "Entre para acessar a área de escrita."
     end
