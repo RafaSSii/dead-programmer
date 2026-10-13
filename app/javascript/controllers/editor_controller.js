@@ -7,18 +7,17 @@ export default class extends Controller {
     this.switchFormat()
   }
 
-  switchFormat() {
+  switchFormat(event) {
     const visualMode = this.formatTarget.value === "visual"
 
     if (visualMode && !this.visualTarget.dataset.initialized) {
-      if (this.markdownTarget.value.trim() === "") {
-        this.visualTarget.replaceChildren()
-      } else if (this.markdownTarget.value.includes("<") && this.markdownTarget.value.includes(">") &&
-        this.markdownTarget.value.trim().startsWith("<")) {
-        // Visual articles are stored as HTML. The server sanitizes them before rendering.
-        this.visualTarget.innerHTML = this.markdownTarget.value
-      } else {
+      if (event) {
         this.visualTarget.innerHTML = this.markdownToHtml(this.markdownTarget.value)
+      } else {
+        // Existing visual articles are stored as HTML; Markdown articles are plain text.
+        this.visualTarget.innerHTML = this.formatTarget.value === "visual"
+          ? this.markdownTarget.value
+          : this.markdownToHtml(this.markdownTarget.value)
       }
       this.visualTarget.dataset.initialized = "true"
     } else if (!visualMode && this.visualTarget.dataset.initialized === "true") {
@@ -56,7 +55,7 @@ export default class extends Controller {
     const inline = (text) => {
       let html = escapeHtml(text)
       html = html.replace(/`([^`\n]+)`/g, "<code>$1</code>")
-      html = html.replace(/**([^*\n]+)**/g, "<strong>$1</strong>")
+      html = html.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
       html = html.replace(/__([^_\n]+)__/g, "<strong>$1</strong>")
       html = html.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>")
       html = html.replace(/(^|[^_])_([^_\n]+)_/g, "$1<em>$2</em>")
