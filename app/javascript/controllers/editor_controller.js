@@ -10,15 +10,13 @@ export default class extends Controller {
   switchFormat(event) {
     const visualMode = this.formatTarget.value === "visual"
 
-    if (visualMode && !this.visualTarget.dataset.initialized) {
-      if (event) {
-        this.visualTarget.innerHTML = this.markdownToHtml(this.markdownTarget.value)
-      } else {
-        // Existing visual articles are stored as HTML; Markdown articles are plain text.
-        this.visualTarget.innerHTML = this.formatTarget.value === "visual"
-          ? this.markdownTarget.value
-          : this.markdownToHtml(this.markdownTarget.value)
-      }
+    if (visualMode && event) {
+      // On a user-triggered switch, the textarea contains Markdown.
+      this.visualTarget.innerHTML = this.markdownToHtml(this.markdownTarget.value)
+      this.visualTarget.dataset.initialized = "true"
+    } else if (visualMode && !this.visualTarget.dataset.initialized) {
+      // Existing visual articles are stored as HTML.
+      this.visualTarget.innerHTML = this.markdownTarget.value
       this.visualTarget.dataset.initialized = "true"
     } else if (!visualMode && this.visualTarget.dataset.initialized === "true") {
       this.markdownTarget.value = this.htmlToMarkdown(this.visualTarget)
