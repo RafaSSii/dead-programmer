@@ -28,6 +28,6 @@ services:
       - key: BLOG_ADMIN_USER
         value: admin
       - key: BLOG_ADMIN_PASSWORD
-        sync: false
+        generateValue: true
       - key: BLOG_LOGIN_PATH
-        sync: false
+        generateValue: true
