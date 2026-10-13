@@ -14,11 +14,10 @@ Rails.application.configure do
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
   config.silence_healthcheck_path = "/up"
 
-  # Keep the first deployment simple: use in-process adapters so production
-  # only needs one PostgreSQL database. These can be moved to Solid adapters later.
+  # Keep the initial production deployment on a single database and use
+  # in-process adapters until dedicated Solid databases are configured.
   config.cache_store = :memory_store
   config.active_job.queue_adapter = :async
-  config.action_cable.adapter = "async"
 
   config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "localhost") }
   config.i18n.fallbacks = true
